@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Search from './components/Search.jsx';
@@ -8,25 +8,20 @@ import axios from 'axios';
 const App = () => {
 
   const [repos, setRepos] = useState([]);
-  // const dbURL = '/repos'
+  useEffect(() => {update()}, [])
 
 
 
   const search = (term) => {
-    // $.ajax({
-    //   type: 'POST',
-    //   url: '/repos',
-    //   data: {username: term},
-    //   success: (data) => {
-    //     console.log(`${term} was searched`)
-    //     console.log(data);
-    //   },
-    //   error: (err) => {console.error(err)}
-    // });
     axios.post('/repos', {username: term})
-      .then(response => getTopRepos())
-      .catch(err => console.error(err));
+      .then(response => update());
 
+  }
+
+  const update = () => {
+    axios.get('/repos')
+    .then(newRepos => setRepos(newRepos.data))
+    .catch(err => console.error(err));
   }
 
 
@@ -34,11 +29,10 @@ const App = () => {
   return (
     <div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={repos}/>
       <Search onSearch={search}/>
+      <RepoList repos={repos}/>
     </div>
   );
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
-//

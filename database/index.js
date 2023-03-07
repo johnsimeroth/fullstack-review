@@ -7,7 +7,8 @@ const repoSchema = new mongoose.Schema({
   owner: String,
   stars: Number,
   forks: Number,
-  watchers: Number
+  watchers: Number,
+  link: String
 });
 
 const Repo = mongoose.model('Repo', repoSchema);
@@ -19,9 +20,13 @@ const save = (repo) => {
     owner: repo.owner.login,
     stars: repo.stargazers_count,
     forks: repo.forks || repo.forks_count,
-    watchers: repo.watchers || repo.watchers_count
+    watchers: repo.watchers || repo.watchers_count,
+    link: repo.html_url
   });
   return newRepo.save()
-}
+};
+
+const get = (lim) => Repo.find().sort({stars: -1}).limit(lim);
 
 module.exports.save = save;
+module.exports.get = get;
