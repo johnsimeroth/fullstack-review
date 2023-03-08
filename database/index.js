@@ -13,20 +13,8 @@ const repoSchema = new mongoose.Schema({
 
 const Repo = mongoose.model('Repo', repoSchema);
 
-const save = (repo) => {
-  const newRepo = new Repo({
-    _id: repo.id,
-    title: repo.name,
-    owner: repo.owner.login,
-    stars: repo.stargazers_count,
-    forks: repo.forks || repo.forks_count,
-    watchers: repo.watchers || repo.watchers_count,
-    link: repo.html_url
-  });
-  return newRepo.save()
+exports.save = (repos) => {
+  return Repo.create(repos);
 };
 
-const get = (lim) => Repo.find().sort({stars: -1}).limit(lim);
-
-module.exports.save = save;
-module.exports.get = get;
+exports.get = (lim) => Repo.find().sort({stars: -1}).limit(lim);
